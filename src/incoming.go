@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"net"
@@ -18,16 +19,29 @@ func listenForIncomingFileTransfer(c chan net.IP) {
 
 	for {
 		data := make([]byte, 4096)
-		_, remoteAddr, err := socket.ReadFromUDP(data)
+		length, remoteAddr, err := socket.ReadFromUDP(data)
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		fmt.Printf("Remote peer %s wants to transfer %s %T\n", remoteAddr, data, remoteAddr)
-		c <- remoteAddr.IP
+		fmt.Printf("Remote peer %s wants to transfer %s\n", remoteAddr, data)
+
+		//@ToDO: Check, if the user wants the file
+		var request transmitFileRequest
+		error := json.Unmarshal(data[:length], &request)
+		if error != nil {
+			log.Fatal(error)
+		}
+
+		go acceptIncomingFileTransfer(socket, remoteAddr.IP, request)
+		//c <- remoteAddr.IP
 	}
 }
 
-func acceptIncomingFileTransfer(peer net.IPAddr, fileName string) {
-
+func acceptIncomingFileTransfer(connection *net.UDPConn, peer net.IP, offering transmitFileRequest) {
+	//@ToDo
+	//Peer accept senden
+	//Auf Datei warten
+	//Datei empfangen
+	//Datei speichern
 }
