@@ -20,7 +20,7 @@ func main() {
 	if *fileName == "" {
 		fmt.Println("No filename given. Assuming, you want to recieve a file")
 
-		go listenForIncomingFileTransfer(channel)
+		listenForIncomingFileTransfer(channel)
 	} else {
 
 		file, err := os.Open(*fileName)

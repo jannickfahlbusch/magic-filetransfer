@@ -35,7 +35,7 @@ func listenForIncomingFileTransfer(c chan net.IP) {
 	}
 
 	channel := make(chan net.IP)
-	go acceptIncomingFileTransfer(remoteAddr.IP, request, channel)
+	acceptIncomingFileTransfer(remoteAddr.IP, request, channel)
 }
 
 func acceptIncomingFileTransfer(peerAddress net.IP, offering transmitFileRequest, c chan net.IP) {
