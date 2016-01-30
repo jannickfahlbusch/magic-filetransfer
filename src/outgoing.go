@@ -3,8 +3,10 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"log"
 	"net"
+	"os"
 	"time"
 )
 
@@ -32,7 +34,7 @@ func broadcastFileTransfer(transmitRequest transmitFileRequest, c chan net.IP) {
 		log.Fatal(error)
 	}
 
-	go listenToStartFileTransfer(connection)
+	go listenToStartFileTransfer()
 
 	for {
 		//Write the offer to broadcast
@@ -46,27 +48,30 @@ func broadcastFileTransfer(transmitRequest transmitFileRequest, c chan net.IP) {
 	//c <- net.IPv4(255, w255, 255, 255)
 }
 
-func listenToStartFileTransfer(connection *net.UDPConn) {
+func listenToStartFileTransfer() {
+	connection, error := net.Listen("tcp4", ":13160")
+	if error != nil {
+		log.Fatal(error)
+	}
+
+	defer connection.Close()
+
 	for {
-		data := make([]byte, 4096)
-		length, remoteAddr, err := connection.ReadFromUDP(data)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		fmt.Printf("Remote peer %s wants to transfer %s\n", remoteAddr, data)
-
-		//@ToDO: Check, if the user wants the file
-		var request transmitFileRequest
-		error := json.Unmarshal(data[:length], &request)
+		ln, error := connection.Accept()
 		if error != nil {
 			log.Fatal(error)
 		}
 
-		go startFileTransfer(connection, remoteAddr.IP, request)
+		file, err := os.Open(*fileName)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		written, error := io.Copy(ln, file)
+		if error != nil {
+			log.Fatal(error)
+		}
+
+		fmt.Printf("Written %v bytes to %s\n", written, ln.RemoteAddr().String())
 	}
-}
-
-func startFileTransfer(connection *net.UDPConn, peerIPAddress net.IP, request transmitFileRequest) {
-
 }

@@ -6,6 +6,7 @@ import (
 	"log"
 	"net"
 	"os"
+	"path/filepath"
 )
 
 var (
@@ -33,7 +34,8 @@ func main() {
 			return
 		}
 
-		transmitRequest := transmitFileRequest{*fileName, fileNameStat.Size()}
+		_, fileName := filepath.Split(*fileName)
+		transmitRequest := transmitFileRequest{fileName, fileNameStat.Size()}
 
 		go broadcastFileTransfer(transmitRequest, channel)
 	}
