@@ -67,6 +67,8 @@ func listenToStartFileTransfer() {
 			log.Fatal(err)
 		}
 
+		defer file.Close()
+
 		written, error := io.Copy(ln, file)
 		if error != nil {
 			log.Fatal(error)
