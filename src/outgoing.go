@@ -69,7 +69,7 @@ func listenToStartFileTransfer(c chan net.IP) {
 
 		defer file.Close()
 
-		fmt.Printf("Writing %s to %s", *fileName, ln.RemoteAddr().String())
+		fmt.Printf("Writing %s to %s\n", *fileName, ln.RemoteAddr().String())
 
 		written, error := io.Copy(ln, file)
 		if error != nil {
