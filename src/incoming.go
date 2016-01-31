@@ -72,6 +72,7 @@ func acceptIncomingFileTransfer(peerAddress net.IP, offering transmitFileRequest
 	defer file.Close()
 
 	progressBar := pb.New64(offering.Size).SetUnits(pb.U_BYTES)
+	progressBar.Prefix(offering.FileName + ": ")
 	progressBar.Start()
 
 	//Create the writer proxy

@@ -74,6 +74,7 @@ func listenToStartFileTransfer(c chan net.IP) {
 		//Get a stat of the file and instanciate the progress-bar
 		fileStat, _ := file.Stat()
 		progressBar := pb.New64(fileStat.Size()).SetUnits(pb.U_BYTES)
+		progressBar.Prefix(*fileName + ": ")
 		progressBar.Start()
 
 		fmt.Printf("Writing %s to %s\n", *fileName, ln.RemoteAddr().String())
