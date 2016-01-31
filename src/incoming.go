@@ -27,14 +27,14 @@ func listenForIncomingFileTransfer(c chan net.IP) {
 		log.Fatal(err)
 	}
 
-	fmt.Printf("Remote peer %s wants to transfer %s\n", remoteAddr, data)
-
 	//@ToDO: Check, if the user wants the file
 	var request transmitFileRequest
 	error := json.Unmarshal(data[:length], &request)
 	if error != nil {
 		log.Fatal(error)
 	}
+
+	fmt.Printf("Remote peer %s wants to transfer %s (Size: %d)\n", remoteAddr, request.FileName, request.Size)
 
 	acceptIncomingFileTransfer(remoteAddr.IP, request, c)
 }
@@ -75,6 +75,5 @@ func acceptIncomingFileTransfer(peerAddress net.IP, offering transmitFileRequest
 	}
 
 	fmt.Printf("Recieved '%s' (Size: %d) from %s \n", offering.FileName, written, connection.RemoteAddr().String())
-
 	c <- net.ParseIP(connection.RemoteAddr().String())
 }
