@@ -34,7 +34,7 @@ func broadcastFileTransfer(transmitRequest transmitFileRequest, c chan net.IP) {
 		log.Fatal(error)
 	}
 
-	go listenToStartFileTransfer()
+	go listenToStartFileTransfer(c)
 
 	for {
 		//Write the offer to broadcast
@@ -48,7 +48,7 @@ func broadcastFileTransfer(transmitRequest transmitFileRequest, c chan net.IP) {
 	//c <- net.IPv4(255, w255, 255, 255)
 }
 
-func listenToStartFileTransfer() {
+func listenToStartFileTransfer(c chan net.IP) {
 	connection, error := net.Listen("tcp4", ":13160")
 	if error != nil {
 		log.Fatal(error)
@@ -75,5 +75,7 @@ func listenToStartFileTransfer() {
 		}
 
 		fmt.Printf("Written %v bytes to %s\n", written, ln.RemoteAddr().String())
+
+		c <- net.ParseIP(ln.RemoteAddr().String())
 	}
 }

@@ -22,7 +22,7 @@ func main() {
 	if *fileName == "" {
 		fmt.Println("No filename given. Assuming, you want to recieve a file")
 
-		listenForIncomingFileTransfer(channel)
+		go listenForIncomingFileTransfer(channel)
 	} else {
 
 		file, err := os.Open(*fileName)
@@ -41,5 +41,7 @@ func main() {
 
 		go broadcastFileTransfer(transmitRequest, channel)
 	}
-	fmt.Println(<-channel)
+
+	ipAddress := <-channel
+	fmt.Println(ipAddress.String())
 }
