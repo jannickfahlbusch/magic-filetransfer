@@ -50,9 +50,13 @@ func acceptIncomingFileTransfer(peerAddress net.IP, offering transmitFileRequest
 	fmt.Println("Connection established")
 
 	if *outputDirectory != "" {
-		filePath = *outputDirectory + "/" + offering.FileName
+		filePath = *outputDirectory + "/"
+	}
+
+	if *outputFileName != "" {
+		filePath += offering.FileName
 	} else {
-		filePath = offering.FileName
+		filePath += *outputFileName
 	}
 
 	file, error := os.Create(filePath)

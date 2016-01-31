@@ -12,6 +12,7 @@ import (
 var (
 	fileName        = flag.String("fileName", "", "Name of the file to transmit")
 	outputDirectory = flag.String("outputDir", "", "Directory to save the retrieved file")
+	outputFileName  = flag.String("outputName", "", "Save the recieved file under a different name")
 )
 
 func main() {
