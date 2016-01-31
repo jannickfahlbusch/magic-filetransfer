@@ -54,10 +54,12 @@ func acceptIncomingFileTransfer(peerAddress net.IP, offering transmitFileRequest
 	}
 
 	if *outputFileName != "" {
-		filePath += offering.FileName
-	} else {
 		filePath += *outputFileName
+	} else {
+		filePath += offering.FileName
 	}
+
+	fmt.Printf("Saving %s from %s to %s\n", offering.FileName, peerAddress.String(), filePath)
 
 	file, error := os.Create(filePath)
 	if error != nil {
