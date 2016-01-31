@@ -9,6 +9,8 @@ import (
 	"os"
 )
 
+var filePath string
+
 func listenForIncomingFileTransfer(c chan net.IP) {
 	socket, err := net.ListenUDP("udp4", &net.UDPAddr{
 		IP:   net.IPv4zero,
@@ -47,7 +49,13 @@ func acceptIncomingFileTransfer(peerAddress net.IP, offering transmitFileRequest
 
 	fmt.Println("Connection established")
 
-	file, error := os.Create(offering.FileName)
+	if *outputDirectory != "" {
+		filePath = *outputDirectory + "/" + offering.FileName
+	} else {
+		filePath = offering.FileName
+	}
+
+	file, error := os.Create(filePath)
 	if error != nil {
 		log.Fatal(error)
 	}

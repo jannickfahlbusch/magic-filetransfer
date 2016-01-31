@@ -10,7 +10,8 @@ import (
 )
 
 var (
-	fileName = flag.String("fileName", "", "Name of the file to transmit")
+	fileName        = flag.String("fileName", "", "Name of the file to transmit")
+	outputDirectory = flag.String("outputDir", "", "Directory to save the retrieved file")
 )
 
 func main() {
