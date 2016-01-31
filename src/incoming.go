@@ -36,8 +36,7 @@ func listenForIncomingFileTransfer(c chan net.IP) {
 		log.Fatal(error)
 	}
 
-	channel := make(chan net.IP)
-	acceptIncomingFileTransfer(remoteAddr.IP, request, channel)
+	acceptIncomingFileTransfer(remoteAddr.IP, request, c)
 }
 
 func acceptIncomingFileTransfer(peerAddress net.IP, offering transmitFileRequest, c chan net.IP) {
@@ -46,6 +45,8 @@ func acceptIncomingFileTransfer(peerAddress net.IP, offering transmitFileRequest
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	defer connection.Close()
 
 	fmt.Println("Connection established")
 
@@ -66,16 +67,14 @@ func acceptIncomingFileTransfer(peerAddress net.IP, offering transmitFileRequest
 		log.Fatal(error)
 	}
 
-	written, error := io.Copy(file, connection)
+	defer file.Close()
+
+	written, error := io.CopyN(file, connection, offering.Size)
 	if error != nil {
 		log.Fatal(error)
 	}
 
 	fmt.Printf("Recieved '%s' (Size: %d) from %s \n", offering.FileName, written, connection.RemoteAddr().String())
-
-	// Close all of the handlers!
-	defer file.Close()
-	defer connection.Close()
 
 	c <- net.ParseIP(connection.RemoteAddr().String())
 }
