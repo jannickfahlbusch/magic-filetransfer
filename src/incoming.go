@@ -7,6 +7,8 @@ import (
 	"log"
 	"net"
 	"os"
+
+	"github.com/cheggaaa/pb"
 )
 
 var filePath string
@@ -69,7 +71,13 @@ func acceptIncomingFileTransfer(peerAddress net.IP, offering transmitFileRequest
 
 	defer file.Close()
 
-	written, error := io.CopyN(file, connection, offering.Size)
+	progressBar := pb.New64(offering.Size).SetUnits(pb.U_BYTES)
+	progressBar.Start()
+
+	//Create the writer proxy
+	writerProxy := io.MultiWriter(file, progressBar)
+
+	written, error := io.CopyN(writerProxy, connection, offering.Size)
 	if error != nil {
 		log.Fatal(error)
 	}

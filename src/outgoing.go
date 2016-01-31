@@ -8,6 +8,8 @@ import (
 	"net"
 	"os"
 	"time"
+
+	"github.com/cheggaaa/pb"
 )
 
 type transmitFileRequest struct {
@@ -69,9 +71,17 @@ func listenToStartFileTransfer(c chan net.IP) {
 
 		defer file.Close()
 
+		//Get a stat of the file and instanciate the progress-bar
+		fileStat, _ := file.Stat()
+		progressBar := pb.New64(fileStat.Size()).SetUnits(pb.U_BYTES)
+		progressBar.Start()
+
 		fmt.Printf("Writing %s to %s\n", *fileName, ln.RemoteAddr().String())
 
-		written, error := io.Copy(ln, file)
+		//Create a proxy for the file reader
+		fileReaderProxy := progressBar.NewProxyReader(file)
+
+		written, error := io.Copy(ln, fileReaderProxy)
 		if error != nil {
 			log.Fatal(error)
 		}
