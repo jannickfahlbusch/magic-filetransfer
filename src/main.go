@@ -1,29 +1,29 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"log"
 	"net"
 	"os"
 	"path/filepath"
+
+	"gopkg.in/alecthomas/kingpin.v2"
 )
 
 var (
-	fileName        = flag.String("fileName", "", "Name of the file to transmit")
-	outputDirectory = flag.String("outputDir", "", "Directory to save the retrieved file")
-	outputFileName  = flag.String("outputName", "", "Save the recieved file under a different name")
-	usage           = flag.Bool("usage", false, "Print the usage for magic-filetransfer and exit")
-	help            = flag.Bool("help", false, "Print the usage for magic-filetransfer and exit - alias for '-usage'")
-	version         = flag.Bool("version", false, "Print the version for magic-filetransfer")
+	fileName        = kingpin.Flag("fileName", "Name of the file to transmit").String()
+	outputDirectory = kingpin.Flag("outputDir", "Directory to save the retrieved file in").String()
+	outputFileName  = kingpin.Flag("outputName", "Save the recieved file under a different name").ExistingFile()
+	usage           = kingpin.Flag("usage", "Print the usage for magic-filetransfer and exit").Short('u').Short('h').Bool()
+	version         = kingpin.Flag("version", "Print the version for magic-filetransfer").Short('v').Bool()
 )
 
 func main() {
-	flag.Parse()
+	kingpin.Parse()
 
 	//Check, if the user wants to see the usage of mft
-	if *usage || *help {
-		flag.PrintDefaults()
+	if *usage {
+		kingpin.Usage()
 		os.Exit(0)
 	}
 
