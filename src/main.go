@@ -11,9 +11,9 @@ import (
 )
 
 var (
-	fileName        = kingpin.Flag("fileName", "Name of the file to transmit").Short('f').String()
-	outputDirectory = kingpin.Flag("outputDir", "Directory to save the retrieved file in").Short('o').String()
-	outputFileName  = kingpin.Flag("outputName", "Save the recieved file under a different name").ExistingFile()
+	fileName        = kingpin.Flag("fileName", "Name of the file to transmit").Short('f').ExistingFile()
+	outputDirectory = kingpin.Flag("outputDir", "Directory to save the retrieved file in").Short('o').ExistingDir()
+	outputFileName  = kingpin.Flag("outputName", "Save the recieved file under a different name").String()
 	usage           = kingpin.Flag("usage", "Print the usage for magic-filetransfer and exit").Short('u').Short('h').Bool()
 	version         = kingpin.Flag("version", "Print the version for magic-filetransfer").Short('v').Bool()
 )
