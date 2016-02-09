@@ -42,12 +42,8 @@ func broadcastFileTransfer(transmitRequest transmitFileRequest, c chan net.IP) {
 		//Write the offer to broadcast
 		connection.Write([]byte(message))
 
-		//data := make([]byte, 4096)
-
-		//c <- remoteAddr.IP
 		time.Sleep(time.Second)
 	}
-	//c <- net.IPv4(255, w255, 255, 255)
 }
 
 func listenToStartFileTransfer(c chan net.IP) {
