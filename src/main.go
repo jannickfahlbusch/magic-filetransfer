@@ -5,7 +5,6 @@ import (
 	"log"
 	"net"
 	"os"
-	"path/filepath"
 
 	"gopkg.in/alecthomas/kingpin.v2"
 )
@@ -41,20 +40,10 @@ func main() {
 
 		go listenForIncomingFileTransfer(channel)
 	} else {
-
-		file, err := os.Open(*fileName)
-		if err != nil {
-			log.Fatal(err)
+		transmitRequest, error := buildTransmitFileRequest(*fileName)
+		if error != nil {
+			log.Fatal(error)
 		}
-		defer file.Close()
-
-		fileNameStat, err := file.Stat()
-		if err != nil {
-			return
-		}
-
-		_, fileName := filepath.Split(*fileName)
-		transmitRequest := transmitFileRequest{fileName, fileNameStat.Size()}
 
 		go broadcastFileTransfer(transmitRequest, channel)
 	}

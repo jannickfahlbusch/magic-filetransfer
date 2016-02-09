@@ -13,11 +13,6 @@ import (
 	"github.com/dustin/go-humanize"
 )
 
-type transmitFileRequest struct {
-	FileName string
-	Size     int64
-}
-
 func broadcastFileTransfer(transmitRequest transmitFileRequest, c chan net.IP) {
 	fmt.Printf("Offering %s to all members of the network...\n", transmitRequest.FileName)
 
