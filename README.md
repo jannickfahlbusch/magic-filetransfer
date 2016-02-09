@@ -23,5 +23,19 @@ Run it instantly:
 go run src/*
 ```
 
+
+This are the commandline flags you can use:
+```
+usage: mft [<flags>]
+
+Flags:
+      --help                   Show context-sensitive help (also try --help-long and --help-man).
+  -f, --fileName=FILENAME      Name of the file to transmit
+  -o, --outputDir=OUTPUTDIR    Directory to save the retrieved file in
+      --outputName=OUTPUTNAME  Save the recieved file under a different name
+  -h, --usage                  Print the usage for magic-filetransfer and exit
+  -v, --version                Print the version for magic-filetransfer
+```
+
 # License
-This proram is licensed under the GPLv3
+This program is licensed under the GPLv3
