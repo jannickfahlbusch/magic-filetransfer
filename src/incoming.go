@@ -9,6 +9,7 @@ import (
 	"os"
 
 	"github.com/cheggaaa/pb"
+	"github.com/dustin/go-humanize"
 )
 
 var filePath string
@@ -36,7 +37,7 @@ func listenForIncomingFileTransfer(c chan net.IP) {
 		log.Fatal(error)
 	}
 
-	fmt.Printf("Remote peer %s wants to transfer %s (Size: %d bytes)\n", remoteAddr, request.FileName, request.Size)
+	fmt.Printf("Remote peer %s wants to transfer %s (Size: %s)\n", remoteAddr, request.FileName, humanize.Bytes(uint64(request.Size)))
 
 	acceptIncomingFileTransfer(remoteAddr.IP, request, c)
 }
@@ -83,6 +84,6 @@ func acceptIncomingFileTransfer(peerAddress net.IP, offering transmitFileRequest
 		log.Fatal(error)
 	}
 
-	fmt.Printf("Recieved '%s' (Size: %d bytes) from %s \n", offering.FileName, written, connection.RemoteAddr().String())
+	fmt.Printf("Recieved '%s' (Size: %s) from %s \n", offering.FileName, humanize.Bytes(uint64(written)), connection.RemoteAddr().String())
 	c <- net.ParseIP(connection.RemoteAddr().String())
 }

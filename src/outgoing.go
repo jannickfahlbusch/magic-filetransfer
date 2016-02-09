@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/cheggaaa/pb"
+	"github.com/dustin/go-humanize"
 )
 
 type transmitFileRequest struct {
@@ -83,7 +84,7 @@ func listenToStartFileTransfer(c chan net.IP) {
 			log.Fatal(error)
 		}
 
-		fmt.Printf("Written %v bytes to %s\n", written, ln.RemoteAddr().String())
+		fmt.Printf("Written %s to %s\n", humanize.Bytes(uint64(written)), ln.RemoteAddr().String())
 
 		c <- net.ParseIP(ln.RemoteAddr().String())
 	}
