@@ -9,9 +9,12 @@ import (
 type transmitFileRequest struct {
 	FileName string
 	Size     int64
+	Hash     string
 }
 
 func buildTransmitFileRequest(fileName string) (transmitFileRequest, error) {
+	var fileHash string
+	transmitRequest := transmitFileRequest{"", 0, fileName}
 	file, err := os.Open(fileName)
 	if err != nil {
 		log.Fatal(err)
@@ -20,11 +23,16 @@ func buildTransmitFileRequest(fileName string) (transmitFileRequest, error) {
 
 	fileNameStat, err := file.Stat()
 	if err != nil {
-		return transmitFileRequest{"", 0}, err
+		return transmitRequest, err
+	}
+
+	fileHash, error := getFileHash(fileName)
+	if error != nil {
+		return transmitRequest, error
 	}
 
 	_, baseFileName := filepath.Split(fileName)
-	transmitRequest := transmitFileRequest{baseFileName, fileNameStat.Size()}
+	transmitRequest = transmitFileRequest{baseFileName, fileNameStat.Size(), fileHash}
 
 	return transmitRequest, nil
 }

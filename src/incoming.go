@@ -85,5 +85,9 @@ func acceptIncomingFileTransfer(peerAddress net.IP, offering transmitFileRequest
 	}
 
 	fmt.Printf("Recieved '%s' (Size: %s) from %s \n", offering.FileName, humanize.Bytes(uint64(written)), connection.RemoteAddr().String())
+	if !compareHash(offering.Hash, filePath) {
+		log.Fatal("Hash mismatch: The file was not transferred correctly!")
+	}
+
 	c <- net.ParseIP(connection.RemoteAddr().String())
 }
