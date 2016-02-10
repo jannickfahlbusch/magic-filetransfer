@@ -89,5 +89,5 @@ func acceptIncomingFileTransfer(peerAddress net.IP, offering transmitFileRequest
 		log.Fatal("Hash mismatch: The file was not transferred correctly!")
 	}
 
-	c <- net.ParseIP(connection.RemoteAddr().String())
+	c <- peerAddress
 }
