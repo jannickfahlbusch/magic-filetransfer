@@ -81,6 +81,10 @@ func listenToStartFileTransfer(c chan net.IP) {
 
 		fmt.Printf("Written %s to %s\n", humanize.Bytes(uint64(written)), ln.RemoteAddr().String())
 
-		c <- net.ParseIP(ln.RemoteAddr().String())
+		remoteAddr, _, error := net.SplitHostPort(ln.RemoteAddr().String())
+		if error != nil {
+			log.Fatal(error)
+		}
+		c <- net.ParseIP(remoteAddr)
 	}
 }
