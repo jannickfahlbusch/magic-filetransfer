@@ -48,6 +48,5 @@ func main() {
 		go broadcastFileTransfer(transmitRequest, channel)
 	}
 
-	ipAddress := <-channel
-	fmt.Println(ipAddress.String())
+	<-channel
 }
