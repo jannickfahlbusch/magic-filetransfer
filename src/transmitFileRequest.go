@@ -7,14 +7,15 @@ import (
 )
 
 type transmitFileRequest struct {
-	FileName string
-	Size     int64
-	Hash     string
+	FileName    string
+	Size        int64
+	Hash        string
+	IsDirectory bool
 }
 
 func buildTransmitFileRequest(fileName string) (transmitFileRequest, error) {
 	var fileHash string
-	transmitRequest := transmitFileRequest{"", 0, fileName}
+	transmitRequest := transmitFileRequest{"", 0, fileName, false}
 	file, err := os.Open(fileName)
 	if err != nil {
 		log.Fatal(err)
@@ -32,7 +33,7 @@ func buildTransmitFileRequest(fileName string) (transmitFileRequest, error) {
 	}
 
 	_, baseFileName := filepath.Split(fileName)
-	transmitRequest = transmitFileRequest{baseFileName, fileNameStat.Size(), fileHash}
+	transmitRequest = transmitFileRequest{baseFileName, fileNameStat.Size(), fileHash, fileNameStat.IsDir()}
 
 	return transmitRequest, nil
 }
