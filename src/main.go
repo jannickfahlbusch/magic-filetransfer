@@ -29,7 +29,7 @@ func main() {
 	if *version {
 		fmt.Printf("----- magic-filetransfer (mft) -------\n")
 		fmt.Printf("Jannick Fahlbusch <git@jf-projects.de>\n")
-		fmt.Printf("           Version 0.1-alpha          \n")
+		fmt.Printf("           Version 0.2          \n")
 
 		os.Exit(0)
 	}
