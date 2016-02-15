@@ -38,15 +38,16 @@ func main() {
 	if *fileName == "" {
 		fmt.Println("No filename given. Assuming, you want to recieve a file")
 
-		go listenForIncomingFileTransfer(channel)
+		listenForIncomingFileTransfer(channel)
 	} else {
 		transmitRequest, error := buildTransmitFileRequest(*fileName)
 		if error != nil {
 			log.Fatal(error)
 		}
 
-		go broadcastFileTransfer(transmitRequest, channel)
+		broadcastFileTransfer(transmitRequest, channel)
 	}
 
+	//Let main() wait until the transfer is completed
 	<-channel
 }
