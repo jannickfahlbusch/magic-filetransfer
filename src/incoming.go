@@ -37,9 +37,22 @@ func listenForIncomingFileTransfer(c chan net.IP) {
 		log.Fatal(error)
 	}
 
-	fmt.Printf("Remote peer %s wants to transfer %s (Size: %s)\n", remoteAddr, request.FileName, humanize.Bytes(uint64(request.Size)))
+	fmt.Printf("Got connection attempt from %s -> ", remoteAddr)
 
-	acceptIncomingFileTransfer(remoteAddr.IP, request, c)
+	//Only accept connections from server when the user specified it
+	if *server != nil {
+		if remoteAddr.IP.Equal(*server) {
+			fmt.Printf("accepting connection\n")
+			fmt.Printf("Remote wants to transfer %s (Size: %s)\n", request.FileName, humanize.Bytes(uint64(request.Size)))
+			acceptIncomingFileTransfer(remoteAddr.IP, request, c)
+		} else {
+			fmt.Printf("DENY (only accepting connections from %s)", *server)
+		}
+	} else {
+		fmt.Printf("accepting connection\n")
+		fmt.Printf("Remote wants to transfer %s (Size: %s)\n", request.FileName, humanize.Bytes(uint64(request.Size)))
+		acceptIncomingFileTransfer(remoteAddr.IP, request, c)
+	}
 }
 
 func acceptIncomingFileTransfer(peerAddress net.IP, offering transmitFileRequest, c chan net.IP) {

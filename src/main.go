@@ -15,6 +15,8 @@ var (
 	outputFileName  = kingpin.Flag("outputName", "Save the recieved file under a different name").String()
 	usage           = kingpin.Flag("usage", "Print the usage for magic-filetransfer and exit").Short('u').Short('h').Bool()
 	version         = kingpin.Flag("version", "Print the version for magic-filetransfer").Short('v').Bool()
+	client          = kingpin.Flag("client", "IP-Address of the client you want to send the file to").Short('c').IP()
+	server          = kingpin.Flag("server", "IP-Address of the server you want to recieve the file from").Short('s').IP()
 )
 
 func main() {

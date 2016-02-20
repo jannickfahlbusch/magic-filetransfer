@@ -14,10 +14,18 @@ import (
 )
 
 func broadcastFileTransfer(transmitRequest transmitFileRequest, c chan net.IP) {
-	fmt.Printf("Offering %s to all members of the network...\n", transmitRequest.FileName)
+	var remoteAddress net.IP
+
+	if *client != nil {
+		remoteAddress = *client
+		fmt.Printf("Offering %s to %s...\n", transmitRequest.FileName, *client)
+	} else {
+		remoteAddress = net.IPv4bcast
+		fmt.Printf("Offering %s to all members of the network...\n", transmitRequest.FileName)
+	}
 
 	connection, err := net.DialUDP("udp4", nil, &net.UDPAddr{
-		IP:   net.IPv4bcast,
+		IP:   remoteAddress,
 		Port: 13159,
 	})
 	if err != nil {
