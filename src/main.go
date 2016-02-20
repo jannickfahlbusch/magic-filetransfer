@@ -15,6 +15,7 @@ var (
 	outputFileName  = kingpin.Flag("outputName", "Save the recieved file under a different name").String()
 	usage           = kingpin.Flag("usage", "Print the usage for magic-filetransfer and exit").Short('u').Short('h').Bool()
 	version         = kingpin.Flag("version", "Print the version for magic-filetransfer").Short('v').Bool()
+	password        = kingpin.Flag("password", "Password used to encrypt the file over the line").Short('p').String()
 )
 
 func main() {

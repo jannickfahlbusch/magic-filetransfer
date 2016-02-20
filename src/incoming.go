@@ -65,6 +65,25 @@ func acceptIncomingFileTransfer(peerAddress net.IP, offering transmitFileRequest
 
 	fmt.Printf("Saving %s from %s to %s\n", offering.FileName, peerAddress.String(), filePath)
 
+	encryptedFile, error := os.Create(filePath + ".crypt")
+	if error != nil {
+		log.Fatal(error)
+	}
+
+	defer encryptedFile.Close()
+
+	progressBar := pb.New64(offering.Size).SetUnits(pb.U_BYTES)
+	progressBar.Prefix(offering.FileName + ": ")
+	progressBar.Start()
+
+	//Create the writer proxy
+	writerProxy := io.MultiWriter(encryptedFile, progressBar)
+
+	written, error := io.CopyN(writerProxy, connection, offering.Size)
+	if error != nil {
+		log.Fatal(error)
+	}
+
 	file, error := os.Create(filePath)
 	if error != nil {
 		log.Fatal(error)
@@ -72,16 +91,18 @@ func acceptIncomingFileTransfer(peerAddress net.IP, offering transmitFileRequest
 
 	defer file.Close()
 
-	progressBar := pb.New64(offering.Size).SetUnits(pb.U_BYTES)
-	progressBar.Prefix(offering.FileName + ": ")
-	progressBar.Start()
-
-	//Create the writer proxy
-	writerProxy := io.MultiWriter(file, progressBar)
-
-	written, error := io.CopyN(writerProxy, connection, offering.Size)
+	written, error = io.CopyN(file, decryptFile(filePath, []byte(*password)), offering.Size)
 	if error != nil {
+		fmt.Println("ERROR")
+
 		log.Fatal(error)
+	}
+	fmt.Println("here")
+
+	//Remove the encrypted file
+	err = os.Remove(filePath + ".crypt")
+	if err != nil {
+		log.Fatal(err)
 	}
 
 	fmt.Printf("Recieved '%s' (Size: %s) from %s \n", offering.FileName, humanize.Bytes(uint64(written)), connection.RemoteAddr().String())

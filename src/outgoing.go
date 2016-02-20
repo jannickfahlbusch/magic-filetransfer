@@ -72,7 +72,7 @@ func listenToStartFileTransfer(c chan net.IP) {
 		fmt.Printf("Writing %s to %s\n", *fileName, ln.RemoteAddr().String())
 
 		//Create a proxy for the file reader
-		fileReaderProxy := progressBar.NewProxyReader(file)
+		fileReaderProxy := progressBar.NewProxyReader(encryptFile(*fileName, []byte(*password)))
 
 		written, error := io.Copy(ln, fileReaderProxy)
 		if error != nil {
