@@ -13,8 +13,11 @@ import (
 	"github.com/dustin/go-humanize"
 )
 
-func broadcastFileTransfer(transmitRequest transmitFileRequest, c chan net.IP) {
+func broadcastFileTransfer(transmitRequest transmitFileRequest) {
 	var remoteAddress net.IP
+
+	//Make a channel to exit the infinite loop, when the request has been accepted
+	fileTransmittedChannel := make(chan bool)
 
 	if *client != nil {
 		remoteAddress = *client
@@ -40,17 +43,23 @@ func broadcastFileTransfer(transmitRequest transmitFileRequest, c chan net.IP) {
 		log.Fatal(error)
 	}
 
-	go listenToStartFileTransfer(c)
+	go listenToStartFileTransfer(fileTransmittedChannel)
 
 	for {
-		//Write the offer to broadcast
-		connection.Write([]byte(message))
+		select {
+		case _ = <-fileTransmittedChannel:
+			fmt.Println("File transmitted")
+			os.Exit(0)
+		default:
+			//Write the offer to broadcast
+			connection.Write([]byte(message))
+		}
 
 		time.Sleep(time.Second)
 	}
 }
 
-func listenToStartFileTransfer(c chan net.IP) {
+func listenToStartFileTransfer(fileTransmittedChannel chan bool) {
 	connection, error := net.Listen("tcp4", ":13160")
 	if error != nil {
 		log.Fatal(error)
@@ -89,10 +98,7 @@ func listenToStartFileTransfer(c chan net.IP) {
 
 		fmt.Printf("Written %s to %s\n", humanize.Bytes(uint64(written)), ln.RemoteAddr().String())
 
-		remoteAddr, _, error := net.SplitHostPort(ln.RemoteAddr().String())
-		if error != nil {
-			log.Fatal(error)
-		}
-		c <- net.ParseIP(remoteAddr)
+		//Send true to the channel
+		fileTransmittedChannel <- true
 	}
 }

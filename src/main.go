@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"log"
-	"net"
 	"os"
 
 	"gopkg.in/alecthomas/kingpin.v2"
@@ -26,11 +25,10 @@ func main() {
 		os.Exit(0)
 	}
 
-	channel := make(chan net.IP)
 	if *fileName == "" {
 		fmt.Println("No filename given. Assuming, you want to recieve a file")
 
-		listenForIncomingFileTransfer(channel)
+		listenForIncomingFileTransfer()
 	} else {
 		fmt.Printf("Starting to offer %s to all other devices in the network...\n", *fileName)
 
@@ -39,9 +37,6 @@ func main() {
 			log.Fatal(error)
 		}
 
-		broadcastFileTransfer(transmitRequest, channel)
+		broadcastFileTransfer(transmitRequest)
 	}
-
-	//Let main() wait until the transfer is completed
-	<-channel
 }

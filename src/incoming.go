@@ -14,7 +14,7 @@ import (
 
 var filePath string
 
-func listenForIncomingFileTransfer(c chan net.IP) {
+func listenForIncomingFileTransfer() {
 	socket, err := net.ListenUDP("udp4", &net.UDPAddr{
 		IP:   net.IPv4zero,
 		Port: 13159,
@@ -44,18 +44,18 @@ func listenForIncomingFileTransfer(c chan net.IP) {
 		if remoteAddr.IP.Equal(*server) {
 			fmt.Printf("accepting connection\n")
 			fmt.Printf("Remote wants to transfer %s (Size: %s)\n", request.FileName, humanize.Bytes(uint64(request.Size)))
-			acceptIncomingFileTransfer(remoteAddr.IP, request, c)
+			acceptIncomingFileTransfer(remoteAddr.IP, request)
 		} else {
 			fmt.Printf("DENY (only accepting connections from %s)", *server)
 		}
 	} else {
 		fmt.Printf("accepting connection\n")
 		fmt.Printf("Remote wants to transfer %s (Size: %s)\n", request.FileName, humanize.Bytes(uint64(request.Size)))
-		acceptIncomingFileTransfer(remoteAddr.IP, request, c)
+		acceptIncomingFileTransfer(remoteAddr.IP, request)
 	}
 }
 
-func acceptIncomingFileTransfer(peerAddress net.IP, offering transmitFileRequest, c chan net.IP) {
+func acceptIncomingFileTransfer(peerAddress net.IP, offering transmitFileRequest) {
 	remoteAddressHostPort := peerAddress.String() + ":13160"
 	connection, err := net.Dial("tcp4", remoteAddressHostPort)
 	if err != nil {
@@ -101,6 +101,4 @@ func acceptIncomingFileTransfer(peerAddress net.IP, offering transmitFileRequest
 	if !compareHash(offering.Hash, filePath) {
 		log.Fatal("Hash mismatch: The file was not transferred correctly!")
 	}
-
-	c <- peerAddress
 }
