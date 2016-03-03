@@ -29,12 +29,16 @@ This are the commandline flags you can use:
 usage: mft [<flags>]
 
 Flags:
-      --help                   Show context-sensitive help (also try --help-long and --help-man).
-  -f, --fileName=FILENAME      Name of the file to transmit
-  -o, --outputDir=OUTPUTDIR    Directory to save the retrieved file in
-      --outputName=OUTPUTNAME  Save the recieved file under a different name
-  -h, --usage                  Print the usage for magic-filetransfer and exit
-  -v, --version                Print the version for magic-filetransfer
+      --help                     Show context-sensitive help (also try --help-long and --help-man).
+  -f, --fileName=FILENAME         Name of the file to transmit
+  -o, --outputDir=OUTPUTDIR      Directory to save the retrieved file in
+      --outputName=OUTPUTNAME    Save the recieved file under a different name
+  -h, --usage                    Print the usage for magic-filetransfer and exit
+  -v, --version                  Print the version for magic-filetransfer
+  -c, --client=CLIENT            IP-Address of the client you want to send the file to
+  -s, --server=SERVER            IP-Address of the server you want to recieve the file from
+      --disable-integrity-check  Disable the integrity-checks after the transfer - NOT recommended!
+
 ```
 
 # License
