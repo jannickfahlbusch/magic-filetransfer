@@ -32,7 +32,7 @@ func main() {
 
 		listenForIncomingFileTransfer(channel)
 	} else {
-		fmt.Println("Starting to offer %s to all other devices in the network...\n", *fileName)
+		fmt.Printf("Starting to offer %s to all other devices in the network...\n", *fileName)
 
 		transmitRequest, error := buildTransmitFileRequest(*fileName)
 		if error != nil {
