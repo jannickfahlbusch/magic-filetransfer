@@ -9,6 +9,10 @@ import (
 )
 
 func getFileHash(filePath string) (string, error) {
+	if *disableIntegrityCheck {
+		return "", nil
+	}
+
 	var result string
 
 	file, error := os.Open(filePath)
@@ -29,6 +33,10 @@ func getFileHash(filePath string) (string, error) {
 }
 
 func compareHash(originalFileHash string, filePath string) bool {
+	if *disableIntegrityCheck {
+		return true
+	}
+
 	fileHash, error := getFileHash(filePath)
 	if error != nil {
 		log.Fatal(error)
