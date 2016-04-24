@@ -15,15 +15,25 @@ import (
 var filePath string
 
 func listenForIncomingFileTransfer() {
-	socket, err := net.ListenUDP("udp4", &net.UDPAddr{
+	socket, error := net.ListenUDP("udp4", &net.UDPAddr{
 		IP:   net.IPv4zero,
 		Port: 13159,
 	})
 
-	if err != nil {
-		log.Fatal(err)
+	if error != nil {
+		log.Fatal(error)
 	}
 
+	if *daemon {
+		for {
+			listen(socket)
+		}
+	} else {
+		listen(socket)
+	}
+}
+
+func listen(socket *net.UDPConn) {
 	data := make([]byte, 4096)
 	length, remoteAddr, err := socket.ReadFromUDP(data)
 	if err != nil {
